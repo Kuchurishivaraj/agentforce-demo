@@ -37,7 +37,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to My Agentforce Testing Portal</h1>
+        <h1>Welcome to My Agentforce Testing Portal---</h1>
         <p>
             This public site is running live for Salesforce Experience Cloud deployment
             verification. It hosts an embedded Agentforce chat widget with a custom
@@ -81,35 +81,62 @@
             }
         }
 
-        // Apply the custom icon AFTER Salesforce creates the button,
-        // so our styles win over Salesforce's own late-injected CSS.
-        document.addEventListener('onEmbeddedMessagingButtonCreated', function () {
-            var btn = document.querySelector(
-                '.embeddedMessagingConversationButton .embeddedMessagingIconTextButton'
+        // Apply the custom icon styling to the button.
+        function styleButton(btn) {
+            btn.style.setProperty(
+                'background-image',
+                "url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?')",
+                'important'
             );
-            if (btn) {
-                btn.style.setProperty(
-                    'background-image',
-                    "url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?')",
-                    'important'
-                );
-                btn.style.setProperty('background-size', 'contain', 'important');
-                btn.style.setProperty('background-repeat', 'no-repeat', 'important');
-                btn.style.setProperty('background-position', 'center', 'important');
-                btn.style.setProperty('background-color', 'transparent', 'important');
-                btn.style.setProperty('border', 'none', 'important');
-                btn.style.setProperty('width', '60px', 'important');
-                btn.style.setProperty('height', '60px', 'important');
-                btn.style.setProperty('box-shadow', 'none', 'important');
+            btn.style.setProperty('background-size', 'contain', 'important');
+            btn.style.setProperty('background-repeat', 'no-repeat', 'important');
+            btn.style.setProperty('background-position', 'center', 'important');
+            btn.style.setProperty('background-color', 'transparent', 'important');
+            btn.style.setProperty('border', 'none', 'important');
+            btn.style.setProperty('width', '60px', 'important');
+            btn.style.setProperty('height', '60px', 'important');
+            btn.style.setProperty('box-shadow', 'none', 'important');
 
-                var label = btn.querySelector('.embeddedMessagingValue');
-                if (label) {
-                    label.style.setProperty('display', 'none', 'important');
-                }
+            var label = btn.querySelector('.embeddedMessagingValue');
+            if (label) {
+                label.style.setProperty('display', 'none', 'important');
+            }
+            console.log('Custom Agentforce icon applied to button.');
+        }
+
+        var BUTTON_SELECTOR =
+            '.embeddedMessagingConversationButton .embeddedMessagingIconTextButton';
+
+        // Try the documented-ish event first, in case it does fire.
+        document.addEventListener('onEmbeddedMessagingButtonCreated', function () {
+            var btn = document.querySelector(BUTTON_SELECTOR);
+            if (btn) {
+                console.log('onEmbeddedMessagingButtonCreated fired, styling button.');
+                styleButton(btn);
             } else {
-                console.warn('Embedded Messaging button element not found when event fired.');
+                console.warn(
+                    'onEmbeddedMessagingButtonCreated fired but selector "' +
+                        BUTTON_SELECTOR +
+                        '" found nothing. Class names may differ in this org/version.'
+                );
             }
         });
+
+        // Fallback: watch the DOM directly. This does not depend on any
+        // Salesforce-internal event name, so it keeps working even if that
+        // event is renamed/removed in a future release.
+        var alreadyStyled = false;
+        var observer = new MutationObserver(function () {
+            if (alreadyStyled) return;
+            var btn = document.querySelector(BUTTON_SELECTOR);
+            if (btn) {
+                alreadyStyled = true;
+                console.log('MutationObserver found the button, styling it.');
+                styleButton(btn);
+                observer.disconnect();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
     </script>
     <script
         type='text/javascript'
