@@ -13,7 +13,7 @@
         height: 65px;
         border-radius: 50%;
         background-color: #FFFFFF;
-        border: 2px solid #5C1D24; /* Williams Sonoma Deep Crimson Corporate Accent Color */
+        border: 2px solid #5C1D24; /* Williams Sonoma Corporate Accent Red */
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
         display: flex;
         align-items: center;
@@ -29,13 +29,13 @@
         <!-- Your Verified Static Resource SVG Icon Asset Link -->
         <img 
             src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?" 
-            alt="Agentforce Olive Icon" 
+            alt="Agentforce Icon" 
             style="width: 42px; height: 42px; display: block; object-fit: contain; pointer-events: none;"
         />
     </button>
 </div>
 
-<!-- Williams Sonoma Decorative Pulse Animation Styles -->
+<!-- Williams Sonoma Pulse Animation Styles -->
 <style>
     .ws-pulse-ring {
         position: absolute;
@@ -61,74 +61,76 @@
 <!-- 2. MERGED SALESFORCE AGENTFORCE V2 INTERACTION SNIPPET            -->
 <!-- ================================================================= -->
 <script type='text/javascript'>
+	// GLOBAL VARIABLE DEFENSE: Safely declare the handler target
+	var agentforceTriggerBound = false;
+
+	// FIXED HERE: We listen directly for the Button Creation layout lifecycle step
+	// This ensures the Salesforce API engine object exists before we touch it
+	window.addEventListener("onEmbeddedMessagingButtonCreated", function() {
+		console.log("Salesforce UI Event Detected: Button Created. API is ready to receive instructions.");
+		
+		// 1. Force the native "Ask me anything" pill to hide instantly via API
+		if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
+			embeddedservice_bootstrap.utilAPI.hideChatButton();
+		}
+
+		// 2. Prevent duplicate click attachments if re-rendered
+		if (agentforceTriggerBound) return;
+
+		var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
+		var triggerBtn = document.getElementById('williamsSonomaBtn');
+		
+		if (triggerBtn && customBtnWrapper) {
+			triggerBtn.addEventListener('click', function() {
+				console.log("Custom button clicked. Executing launchChat API directly...");
+				
+				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
+					// Maximize the messaging frame
+					embeddedservice_bootstrap.utilAPI.launchChat()
+						.then(function() {
+							// Fade out the custom floating image when window expands
+							customBtnWrapper.style.opacity = '0';
+							customBtnWrapper.style.pointerEvents = 'none';
+						})
+						.catch(function(error) {
+							console.error('Failed to open Agentforce framework panel:', error);
+						});
+				} else {
+					console.error("Salesforce utilAPI is missing at click runtime.");
+				}
+			});
+			agentforceTriggerBound = true;
+		}
+	});
+
+	// Restore the button visibility when the user terminates the chat panel
+	window.addEventListener("onEmbeddedMessagingWindowClosed", function() {
+		var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
+		if (customBtnWrapper) {
+			customBtnWrapper.style.opacity = '1';
+			customBtnWrapper.style.pointerEvents = 'auto';
+		}
+	});
+
 	function initEmbeddedMessaging() {
 		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+			embeddedservice_bootstrap.settings.language = 'en_US'; 
 
-			// Williams Sonoma Change 1: Tell Agentforce core modules to drop default visual injection rules
+			// Request the system engine to keep standard layout hidden during paint cycles
 			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-			// Williams Sonoma Change 2: Production-grade asynchronous node masking loop
-			// If Salesforce tries to inject fallback styles, clean them out of the DOM tree immediately
-			var nativeElementMaskingLoop = setInterval(function() {
-				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
-					embeddedservice_bootstrap.utilAPI.hideChatButton();
-				}
-				var nativeTargets = document.querySelectorAll('.embeddedServiceHelpButton, [class*="embeddedservice-chat-header"], [class*="helpButton"], .embeddedservice-chat-launcher');
-				nativeTargets.forEach(function(node) {
-					node.remove(); 
-				});
-			}, 40);
-
-			// Terminate tracking cycles after 12 seconds to save processing overhead
-			setTimeout(function() {
-				clearInterval(nativeElementMaskingLoop);
-			}, 12000);
-
-			// Williams Sonoma Change 3: Bind custom button click ONLY after engine signals it is fully ready
-			window.addEventListener("onEmbeddedMessagingReady", function() {
-				console.log("Salesforce Core Engine fully synchronized with Williams Sonoma patch.");
-				
-				var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
-				var triggerBtn = document.getElementById('williamsSonomaBtn');
-				
-				if (triggerBtn && customBtnWrapper) {
-					triggerBtn.addEventListener('click', function() {
-						// Call the official modern Salesforce API launch method
-						embeddedservice_bootstrap.utilAPI.launchChat()
-							.then(function() {
-								// Clean transition: hide custom layout entry point when chat window displays
-								customBtnWrapper.style.opacity = '0';
-								customBtnWrapper.style.pointerEvents = 'none';
-							})
-							.catch(function(error) {
-								console.error('Failed to command Agentforce framework launch:', error);
-							});
-					});
-				}
-			});
-
-			// Williams Sonoma Change 4: Bring back the custom button when user terminates/closes chat window
-			window.addEventListener("onEmbeddedMessagingWindowClosed", function() {
-				var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
-				if (customBtnWrapper) {
-					customBtnWrapper.style.opacity = '1';
-					customBtnWrapper.style.pointerEvents = 'auto';
-				}
-			});
-
-			// YOUR UNIQUE IDENTIFICATION KEYS KEPT EXACTLY THE SAME:
+			// YOUR UNIQUE AGENT ENDPOINTS - KEEP THESE ABSOLUTELY UNTOUCHED
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
-				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				'https://site.com',
 				{
-					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+					scrt2URL: 'https://salesforce-scrt.com'
 				}
 			);
 
 		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
+			console.error('Error loading Embedded Messaging settings structure: ', err);
 		}
 	};
 </script>
@@ -136,4 +138,4 @@
 <!-- ================================================================= -->
 <!-- 3. PLATFORM BOOTSTRAP INJECTOR CORE LAYER                         -->
 <!-- ================================================================= -->
-<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
