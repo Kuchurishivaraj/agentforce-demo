@@ -17,37 +17,26 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* --- STYLED CUSTOM FLOATING IMAGE CHAT BUTTON --- */
+        /* --- YOUR NEW CUSTOM FLOATING IMAGE CHAT BUTTON --- */
         .custom-chat-launcher {
             position: fixed;
             bottom: 30px;
             right: 30px;
             width: 65px;
             height: 65px;
-            background-color: #0070d2;
-            background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?');
+            background-color: #0070d2; /* Salesforce Blue Background */
+            background-image: url('https://force.com?');
             background-size: 32px 32px;
             background-repeat: no-repeat;
             background-position: center;
             border-radius: 50%;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 9999;
-            
-            /* HIDDEN BY DEFAULT TO PREVENT ACCIDENTAL EARLY CLICKS */
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease, transform 0.2s ease;
+            transition: transform 0.2s ease;
+            z-index: 9999; /* Keeps it on top of the website content */
         }
-        
-        /* SHOWS THE BUTTON AUTOMATICALLY WHEN READY */
-        .custom-chat-launcher.is-ready {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
         .custom-chat-launcher:hover {
-            transform: scale(1.08);
+            transform: scale(1.08); /* Slight pop effect on hover */
         }
     </style>
 </head>
@@ -55,49 +44,41 @@
 
     <div class="container">
         <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce deployment verification!</p>
+        <p>This public site is running live for Salesforce deployment verification++</p>
     </div>
 
-    <!-- YOUR CUSTOM CHAT BUTTON WITH UNIQUE ID LINK -->
-    <div id="myAgentforceButton" class="custom-chat-launcher" onclick="launchAgentforceChat()"></div>
+    <!-- THIS IS YOUR ACTUAL CUSTOM IMAGE BUTTON -->
+    <div class="custom-chat-launcher" onclick="launchAgentforceChat()"></div>
 
-    <!-- SALESFORCE AGENTFORCE CONFIGURATION WITH ENGINE READY HOOKS -->
+    <!-- SALESFORCE AGENTFORCE CONFIGURATION WITH API HOOKS -->
     <script type='text/javascript'>
-        // Opens the chat menu when your custom icon is clicked
+        // Function to open the chat when someone clicks your custom image button
         function launchAgentforceChat() {
             try {
-                if (typeof embeddedservice_bootstrap !== 'undefined') {
+                // Check if the Salesforce library is fully loaded first
+                if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
                     embeddedservice_bootstrap.utilAPI.launchChat();
                 } else {
-                    console.warn('Salesforce engine is still setting up. Please wait.');
+                    alert('Agentforce is still loading, please try again in a few seconds!');
                 }
             } catch (err) {
                 console.error('Failed to launch chat window: ', err);
             }
         }
 
-        // Activates and displays your custom image layout smoothly when ready
-        window.addEventListener("onEmbeddedMessagingReady", () => {
-            console.log("Salesforce Chat Engine loaded successfully!");
-            const chatBtn = document.getElementById("myAgentforceButton");
-            if (chatBtn) {
-                chatBtn.classList.add("is-ready");
-            }
-        });
-
         function initEmbeddedMessaging() {
             try {
                 embeddedservice_bootstrap.settings.language = 'en_US'; 
 
-                // Hides standard Salesforce text rectangle interface layout
+                // THIS CRUCIAL LINE TELLS SALESFORCE TO HIDE THE "ASK ME ANYTHING" TEXT BUTTON
                 embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
                 embeddedservice_bootstrap.init(
                     '00Dfj00000Q0q2r',
                     'Service_Desk_Agent_Deployment',
-                    'https://site.com',
+                    'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
                     {
-                        scrt2URL: 'https://salesforce-scrt.com'
+                        scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
                     }
                 );
             } catch (err) {
@@ -105,7 +86,7 @@
             }
         };
     </script>
-    <script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+    <script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 </body>
 </html>
