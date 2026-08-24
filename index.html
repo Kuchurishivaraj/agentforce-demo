@@ -5,111 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentforce Test Site</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f6f9; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
-        h1 { color: #16325c; }
-        p { color: #444; line-height: 1.6; }
-        .status { margin-top: 20px; padding: 12px 16px; background: #eef4ff; border-left: 4px solid #0176d3; border-radius: 4px; font-size: 14px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f6f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* --- YOUR NEW CUSTOM FLOATING IMAGE CHAT BUTTON --- */
+        .custom-chat-launcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 65px;
+            height: 65px;
+            background-color: #0070d2; /* Salesforce Blue Background */
+            background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?');
+            background-size: 32px 32px;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+            z-index: 9999; /* Keeps it on top of the website content */
+        }
+        .custom-chat-launcher:hover {
+            transform: scale(1.08); /* Slight pop effect on hover */
+        }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce Experience Cloud deployment verification. It hosts an embedded Agentforce chat widget with a custom launcher icon, replacing the default Salesforce chat bubble.</p>
-        <p>Use this page to confirm that the chat widget loads correctly, that the custom icon renders instead of the default "Ask me anything" button, and that the conversation flow works end-to-end once the widget is opened.</p>
-        <div class="status">Status: Chat widget should appear in the bottom-right corner of this page once Agentforce finishes initializing.</div>
+        <p>This public site is running live for Salesforce deployment verification...----</p>
     </div>
 
-    <!-- Your own custom chat launcher button. Hidden until Agentforce is ready. -->
-    <div id="myCustomChatButton" style="
-        display: none;
-        position: fixed;
-        bottom: 25px;
-        right: 25px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 9999;
-        background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    " onclick="openAgentforceChat()"></div>
+    <!-- THIS IS YOUR ACTUAL CUSTOM IMAGE BUTTON -->
+    <div class="custom-chat-launcher" onclick="launchAgentforceChat()"></div>
 
-    <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY BELOW THIS LINE -->
+    <!-- SALESFORCE AGENTFORCE CONFIGURATION WITH API HOOKS -->
     <script type='text/javascript'>
-        function initEmbeddedMessaging() {
-            function runInit() {
-                try {
-                    embeddedservice_bootstrap.settings.language = 'en_US';
-                    embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-
-                    embeddedservice_bootstrap.init(
-                        '00Dfj00000Q0q2r',
-                        'Service_Desk_Agent_Deployment',
-                        'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
-                        {
-                            scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-                        }
-                    );
-                } catch (err) {
-                    console.error('Error loading Embedded Messaging: ', err);
-                }
-            }
-
-            if (document.body) {
-                runInit();
-            } else {
-                document.addEventListener('DOMContentLoaded', runInit);
-            }
-        }
-
-        // Reveal our custom button once Agentforce is fully ready.
-        // NOTE: Salesforce dispatches this on `window`, not `document`.
-        window.addEventListener('onEmbeddedMessagingReady', function () {
-            console.log('onEmbeddedMessagingReady fired.');
-            var myBtn = document.getElementById('myCustomChatButton');
-            if (myBtn) {
-                myBtn.style.display = 'block';
-                console.log('Custom chat button shown.');
-            } else {
-                console.warn('myCustomChatButton element not found in DOM.');
-            }
-        });
-
-        // hideChatButtonOnLoad only suppresses the native button on initial
-        // page load. Salesforce can re-show it after the chat window opens
-        // and closes. This listener forces it hidden every time it's
-        // (re)created, so it never overlaps our custom button again.
-        window.addEventListener('onEmbeddedMessagingButtonCreated', function () {
-            console.log('onEmbeddedMessagingButtonCreated fired — forcing native button hidden.');
+        // 1. Function to open the chat when someone clicks your custom image button
+        function launchAgentforceChat() {
             try {
-                if (embeddedservice_bootstrap.utilAPI && embeddedservice_bootstrap.utilAPI.hideChatButton) {
-                    embeddedservice_bootstrap.utilAPI.hideChatButton();
-                }
+                embeddedservice_bootstrap.utilAPI.launchChat();
             } catch (err) {
-                console.error('Error hiding native chat button: ', err);
+                console.error('Failed to launch chat window: ', err);
             }
-        });
-
-        // Open the chat window when our custom button is clicked.
-        function openAgentforceChat() {
-            embeddedservice_bootstrap.utilAPI.launchChat()
-                .then(function () {
-                    console.log('Chat launched successfully.');
-                })
-                .catch(function (err) {
-                    console.error('Error launching chat: ', err);
-                });
         }
+
+        function initEmbeddedMessaging() {
+            try {
+                embeddedservice_bootstrap.settings.language = 'en_US'; 
+
+                // 2. THIS CRUCIAL LINE TELLS SALESFORCE TO HIDE THE "ASK ME ANYTHING" TEXT BUTTON
+                embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+
+                embeddedservice_bootstrap.init(
+                    '00Dfj00000Q0q2r',
+                    'Service_Desk_Agent_Deployment',
+                    'https://site.com',
+                    {
+                        scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+                    }
+                );
+            } catch (err) {
+                console.error('Error loading Embedded Messaging: ', err);
+            }
+        };
     </script>
-    <script
-        type='text/javascript'
-        src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js'
-        onload='initEmbeddedMessaging()'
-    ></script>
-    <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY ABOVE THIS LINE -->
+    <script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+
 </body>
 </html>
