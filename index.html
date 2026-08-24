@@ -1,92 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentforce Test Site</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f6f9;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+<!-- 1. Custom Image Button HTML Structure (Modify Style/Image URL as Needed) -->
+<div id="custom-agentforce-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 999999;">
+    <img 
+        src="https://yourwebsite.com" 
+        id="customAgentforceBtn" 
+        alt="Chat with Agent" 
+        style="width: 60px; height: 60px; cursor: pointer; display: block; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s;"
+        onmouseover="this.style.transform='scale(1.05)'"
+        onmouseout="this.style.transform='scale(1)'"
+    />
+</div>
 
-        /* --- YOUR NEW CUSTOM FLOATING IMAGE CHAT BUTTON --- */
-        .custom-chat-launcher {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 65px;
-            height: 65px;
-            background-color: #0070d2; /* Salesforce Blue Background */
-            background-image: url('https://force.com?');
-            background-size: 32px 32px;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: transform 0.2s ease;
-            z-index: 9999; /* Keeps it on top of the website content */
-        }
-        .custom-chat-launcher:hover {
-            transform: scale(1.08); /* Slight pop effect on hover */
-        }
-    </style>
-</head>
-<body>
+<!-- 2. Salesforce Enhanced Chat v2 JavaScript Initialization and Event Triggers -->
+<script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
-    <div class="container">
-        <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce deployment verification++</p>
-    </div>
+			// CHANGES APPLIED HERE:
+			// Automatically hide the standard Salesforce "Ask me anything" button layout on load
+			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true; 
 
-    <!-- THIS IS YOUR ACTUAL CUSTOM IMAGE BUTTON -->
-    <div class="custom-chat-launcher" onclick="launchAgentforceChat()"></div>
+			embeddedservice_bootstrap.init(
+				'00Dfj00000Q0q2r',
+				'Service_Desk_Agent_Deployment',
+				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				{
+					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
 
-    <!-- SALESFORCE AGENTFORCE CONFIGURATION WITH API HOOKS -->
-    <script type='text/javascript'>
-        // Function to open the chat when someone clicks your custom image button
-        function launchAgentforceChat() {
-            try {
-                // Check if the Salesforce library is fully loaded first
-                if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
-                    embeddedservice_bootstrap.utilAPI.launchChat();
-                } else {
-                    alert('Agentforce is still loading, please try again in a few seconds!');
-                }
-            } catch (err) {
-                console.error('Failed to launch chat window: ', err);
-            }
-        }
+			// CHANGES APPLIED HERE:
+			// Add a click handler to your custom image that triggers the official modern v2 API
+			document.getElementById('customAgentforceBtn').addEventListener('click', function() {
+				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
+					// Use standard v2 maximize action
+					embeddedservice_bootstrap.utilAPI.launchChat(); 
+				} else {
+					console.error('Agentforce framework is still loading. Please wait.');
+				}
+			});
 
-        function initEmbeddedMessaging() {
-            try {
-                embeddedservice_bootstrap.settings.language = 'en_US'; 
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
 
-                // THIS CRUCIAL LINE TELLS SALESFORCE TO HIDE THE "ASK ME ANYTHING" TEXT BUTTON
-                embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-
-                embeddedservice_bootstrap.init(
-                    '00Dfj00000Q0q2r',
-                    'Service_Desk_Agent_Deployment',
-                    'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
-                    {
-                        scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-                    }
-                );
-            } catch (err) {
-                console.error('Error loading Embedded Messaging: ', err);
-            }
-        };
-    </script>
-    <script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
-
-</body>
-</html>
+<!-- 3. Core Salesforce Bootstrap Loader Script -->
+<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
