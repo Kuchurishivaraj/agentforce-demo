@@ -16,44 +16,44 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+    </style>
 
-        /* --- CUSTOM IMAGE ICON STYLES START HERE --- */
-        .embeddedMessagingConversationButton .embeddedMessagingIconTextButton {
+    <!-- THIS SPECIAL HOOK TELLS SALESFORCE TO ALLOW YOUR STYLES INSIDE THE SHADOW DOM -->
+    <style id="embeddedMessagingCustomStyles">
+        :host .embeddedMessagingIconTextButton {
             background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?') !important;
-            background-size: contain !important;
+            background-size: 32px 32px !important;
             background-repeat: no-repeat !important;
             background-position: center !important;
-            background-color: transparent !important; /* Removes default Salesforce color */
+            background-color: #0070d2 !important;
+            border-radius: 50% !important;
+            width: 60px !important;
+            height: 60px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
             border: none !important;
-            width: 60px !important;  /* Adjust size as needed */
-            height: 60px !important; /* Adjust size as needed */
-            box-shadow: none !important;
         }
-
-        /* Hides the default standard "Ask me anything" text label */
-        .embeddedMessagingConversationButton .embeddedMessagingIconTextButton .embeddedMessagingValue {
+        :host .embeddedMessagingValue {
             display: none !important;
         }
-        /* --- CUSTOM IMAGE ICON STYLES END HERE --- */
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce deployment verification..??</p>
+        <p>This public site is running live for Salesforce deployment verification==</p>
     </div>
 
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY BELOW THIS LINE -->
     <script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+			embeddedservice_bootstrap.settings.language = 'en_US'; 
 
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
-				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				'https://site.com',
 				{
 					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
 				}
@@ -63,7 +63,7 @@
 		}
 	};
 </script>
-<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY ABOVE THIS LINE -->
 
 </body>
