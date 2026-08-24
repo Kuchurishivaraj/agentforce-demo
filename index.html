@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to My Agentforce Testing Portal</h1>
+        <h1>Welcome to My Agentforce Testing Portal!</h1>
         <p>This public site is running live for Salesforce Experience Cloud deployment verification. It hosts an embedded Agentforce chat widget with a custom launcher icon, replacing the default Salesforce chat bubble.</p>
         <p>Use this page to confirm that the chat widget loads correctly, that the custom icon renders instead of the default "Ask me anything" button, and that the conversation flow works end-to-end once the widget is opened.</p>
         <div class="status">Status: Chat widget should appear in the bottom-right corner of this page once Agentforce finishes initializing.</div>
@@ -44,9 +44,6 @@
             function runInit() {
                 try {
                     embeddedservice_bootstrap.settings.language = 'en_US';
-
-                    // Key line: stops Salesforce's own default button from
-                    // ever being shown, so there's no shadow-DOM fight.
                     embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
                     embeddedservice_bootstrap.init(
@@ -70,11 +67,15 @@
         }
 
         // Reveal our custom button once Agentforce is fully ready.
-        document.addEventListener('onEmbeddedMessagingReady', function () {
+        // NOTE: Salesforce dispatches this on `window`, not `document`.
+        window.addEventListener('onEmbeddedMessagingReady', function () {
+            console.log('onEmbeddedMessagingReady fired.');
             var myBtn = document.getElementById('myCustomChatButton');
             if (myBtn) {
                 myBtn.style.display = 'block';
-                console.log('Agentforce ready — custom chat button shown.');
+                console.log('Custom chat button shown.');
+            } else {
+                console.warn('myCustomChatButton element not found in DOM.');
             }
         });
 
