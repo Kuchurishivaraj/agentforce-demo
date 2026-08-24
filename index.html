@@ -5,61 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentforce Test Site</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f4f6f9;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #16325c;
-        }
-        p {
-            color: #444;
-            line-height: 1.6;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 12px 16px;
-            background: #eef4ff;
-            border-left: 4px solid #0176d3;
-            border-radius: 4px;
-            font-size: 14px;
-        }
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f6f9; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+        h1 { color: #16325c; }
+        p { color: #444; line-height: 1.6; }
+        .status { margin-top: 20px; padding: 12px 16px; background: #eef4ff; border-left: 4px solid #0176d3; border-radius: 4px; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to My Agentforce Testing Portal---</h1>
-        <p>
-            This public site is running live for Salesforce Experience Cloud deployment
-            verification. It hosts an embedded Agentforce chat widget with a custom
-            launcher icon, replacing the default Salesforce chat bubble.
-        </p>
-        <p>
-            Use this page to confirm that the chat widget loads correctly, that the
-            custom icon renders instead of the default "Ask me anything" button, and
-            that the conversation flow works end-to-end once the widget is opened.
-        </p>
-        <div class="status">
-            Status: Chat widget should appear in the bottom-right corner of this page
-            once Agentforce finishes initializing.
-        </div>
+        <h1>Welcome to My Agentforce Testing Portal</h1>
+        <p>This public site is running live for Salesforce Experience Cloud deployment verification. It hosts an embedded Agentforce chat widget with a custom launcher icon, replacing the default Salesforce chat bubble.</p>
+        <p>Use this page to confirm that the chat widget loads correctly, that the custom icon renders instead of the default "Ask me anything" button, and that the conversation flow works end-to-end once the widget is opened.</p>
+        <div class="status">Status: Chat widget should appear in the bottom-right corner of this page once Agentforce finishes initializing.</div>
     </div>
+
+    <!-- Your own custom chat launcher button. Hidden until Agentforce is ready. -->
+    <div id="myCustomChatButton" style="
+        display: none;
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 9999;
+        background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    " onclick="openAgentforceChat()"></div>
 
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY BELOW THIS LINE -->
     <script type='text/javascript'>
-        function safeInit() {
+        function initEmbeddedMessaging() {
             function runInit() {
                 try {
-                    embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+                    embeddedservice_bootstrap.settings.language = 'en_US';
+
+                    // Key line: stops Salesforce's own default button from
+                    // ever being shown, so there's no shadow-DOM fight.
+                    embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+
                     embeddedservice_bootstrap.init(
                         '00Dfj00000Q0q2r',
                         'Service_Desk_Agent_Deployment',
@@ -73,7 +62,6 @@
                 }
             }
 
-            // Guard against bootstrap.min.js firing before document.body exists
             if (document.body) {
                 runInit();
             } else {
@@ -81,67 +69,30 @@
             }
         }
 
-        // Apply the custom icon styling to the button.
-        function styleButton(btn) {
-            btn.style.setProperty(
-                'background-image',
-                "url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?')",
-                'important'
-            );
-            btn.style.setProperty('background-size', 'contain', 'important');
-            btn.style.setProperty('background-repeat', 'no-repeat', 'important');
-            btn.style.setProperty('background-position', 'center', 'important');
-            btn.style.setProperty('background-color', 'transparent', 'important');
-            btn.style.setProperty('border', 'none', 'important');
-            btn.style.setProperty('width', '60px', 'important');
-            btn.style.setProperty('height', '60px', 'important');
-            btn.style.setProperty('box-shadow', 'none', 'important');
-
-            var label = btn.querySelector('.embeddedMessagingValue');
-            if (label) {
-                label.style.setProperty('display', 'none', 'important');
+        // Reveal our custom button once Agentforce is fully ready.
+        document.addEventListener('onEmbeddedMessagingReady', function () {
+            var myBtn = document.getElementById('myCustomChatButton');
+            if (myBtn) {
+                myBtn.style.display = 'block';
+                console.log('Agentforce ready — custom chat button shown.');
             }
-            console.log('Custom Agentforce icon applied to button.');
+        });
+
+        // Open the chat window when our custom button is clicked.
+        function openAgentforceChat() {
+            embeddedservice_bootstrap.utilAPI.launchChat()
+                .then(function () {
+                    console.log('Chat launched successfully.');
+                })
+                .catch(function (err) {
+                    console.error('Error launching chat: ', err);
+                });
         }
-
-        var BUTTON_SELECTOR =
-            '.embeddedMessagingConversationButton .embeddedMessagingIconTextButton';
-
-        // Try the documented-ish event first, in case it does fire.
-        document.addEventListener('onEmbeddedMessagingButtonCreated', function () {
-            var btn = document.querySelector(BUTTON_SELECTOR);
-            if (btn) {
-                console.log('onEmbeddedMessagingButtonCreated fired, styling button.');
-                styleButton(btn);
-            } else {
-                console.warn(
-                    'onEmbeddedMessagingButtonCreated fired but selector "' +
-                        BUTTON_SELECTOR +
-                        '" found nothing. Class names may differ in this org/version.'
-                );
-            }
-        });
-
-        // Fallback: watch the DOM directly. This does not depend on any
-        // Salesforce-internal event name, so it keeps working even if that
-        // event is renamed/removed in a future release.
-        var alreadyStyled = false;
-        var observer = new MutationObserver(function () {
-            if (alreadyStyled) return;
-            var btn = document.querySelector(BUTTON_SELECTOR);
-            if (btn) {
-                alreadyStyled = true;
-                console.log('MutationObserver found the button, styling it.');
-                styleButton(btn);
-                observer.disconnect();
-            }
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
     </script>
     <script
         type='text/javascript'
         src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js'
-        onload='safeInit()'
+        onload='initEmbeddedMessaging()'
     ></script>
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY ABOVE THIS LINE -->
 </body>
