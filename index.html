@@ -1,71 +1,139 @@
-<!-- 1. WILLIAMS SONOMA STYLE SEPARATED FRONTEND UI -->
-<div id="williams-sonoma-chat-container" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999;">
-    <!-- Your Exact Static Resource Icon -->
-    <div id="williamsSonomaBtn" style="cursor: pointer; width: 60px; height: 60px; border-radius: 50%; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+<!-- ================================================================= -->
+<!-- 1. WILLIAMS SONOMA IDENTICAL FRONT-END INTERFACE LAYOUT           -->
+<!-- ================================================================= -->
+<div id="williams-sonoma-chat-wrapper" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999; pointer-events: auto;">
+    
+    <!-- Pulse Effect Background Layer -->
+    <div class="ws-pulse-ring"></div>
+    
+    <!-- Exact Floating Circular Action Button Element -->
+    <button id="williamsSonomaBtn" aria-label="Chat with AI Agent" style="
+        position: relative;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background-color: #FFFFFF;
+        border: 2px solid #5C1D24; /* Williams Sonoma Deep Crimson Corporate Accent Color */
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        outline: none;
+        transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s ease, opacity 0.3s ease;
+    "
+    onmouseover="this.style.transform='scale(1.08)'; this.style.boxShadow='0 12px 38px rgba(0,0,0,0.25)';"
+    onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 32px rgba(0, 0, 0, 0.18)';"
+    >
+        <!-- Your Verified Static Resource SVG Icon Asset Link -->
         <img 
-            src="https://force.com?" 
-            alt="Chat with Agent" 
-            style="width: 50px; height: 50px; display: block; object-fit: contain;"
+            src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?" 
+            alt="Agentforce Olive Icon" 
+            style="width: 42px; height: 42px; display: block; object-fit: contain; pointer-events: none;"
         />
-    </div>
+    </button>
 </div>
 
-<!-- 2. ISOLATED AGENTFORCE V2 INTERACTION BRIDGE ENGINE -->
+<!-- Williams Sonoma Decorative Pulse Animation Styles -->
+<style>
+    .ws-pulse-ring {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        border: 3px solid #5C1D24;
+        animation: wsPulseAnimation 2s infinite ease-out;
+        pointer-events: none;
+        box-sizing: border-box;
+        opacity: 0;
+    }
+    @keyframes wsPulseAnimation {
+        0% { transform: scale(0.95); opacity: 0.8; }
+        50% { opacity: 0.4; }
+        100% { transform: scale(1.4); opacity: 0; }
+    }
+</style>
+
+<!-- ================================================================= -->
+<!-- 2. MERGED SALESFORCE AGENTFORCE V2 INTERACTION SNIPPET            -->
+<!-- ================================================================= -->
 <script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; 
-			
-			// Force Salesforce to keep its own button invisible
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+
+			// Williams Sonoma Change 1: Tell Agentforce core modules to drop default visual injection rules
 			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-			// FIXED HERE: This is the event Williams Sonoma uses. 
-			// We only activate the custom click tracker AFTER Salesforce is fully ready.
+			// Williams Sonoma Change 2: Production-grade asynchronous node masking loop
+			// If Salesforce tries to inject fallback styles, clean them out of the DOM tree immediately
+			var nativeElementMaskingLoop = setInterval(function() {
+				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
+					embeddedservice_bootstrap.utilAPI.hideChatButton();
+				}
+				var nativeTargets = document.querySelectorAll('.embeddedServiceHelpButton, [class*="embeddedservice-chat-header"], [class*="helpButton"], .embeddedservice-chat-launcher');
+				nativeTargets.forEach(function(node) {
+					node.remove(); 
+				});
+			}, 40);
+
+			// Terminate tracking cycles after 12 seconds to save processing overhead
+			setTimeout(function() {
+				clearInterval(nativeElementMaskingLoop);
+			}, 12000);
+
+			// Williams Sonoma Change 3: Bind custom button click ONLY after engine signals it is fully ready
 			window.addEventListener("onEmbeddedMessagingReady", function() {
-				console.log("Salesforce Core Engine Ready. Binding Custom Williams Sonoma Trigger...");
+				console.log("Salesforce Core Engine fully synchronized with Williams Sonoma patch.");
 				
-				var customButtonElement = document.getElementById('williamsSonomaBtn');
-				if (customButtonElement) {
-					customButtonElement.addEventListener('click', function() {
-						// Execute the official launch promise to maximize the widget layout
+				var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
+				var triggerBtn = document.getElementById('williamsSonomaBtn');
+				
+				if (triggerBtn && customBtnWrapper) {
+					triggerBtn.addEventListener('click', function() {
+						// Call the official modern Salesforce API launch method
 						embeddedservice_bootstrap.utilAPI.launchChat()
 							.then(function() {
-								console.log("Chat window opened successfully.");
-								// Hide custom floating entry point when window expands
-								customButtonElement.style.opacity = '0';
-								customButtonElement.style.pointerEvents = 'none';
+								// Clean transition: hide custom layout entry point when chat window displays
+								customBtnWrapper.style.opacity = '0';
+								customBtnWrapper.style.pointerEvents = 'none';
 							})
 							.catch(function(error) {
-								console.error('Failed to trigger Agentforce engine:', error);
+								console.error('Failed to command Agentforce framework launch:', error);
 							});
 					});
 				}
 			});
 
-			// Restore your custom image button if the user closes the chat panel
+			// Williams Sonoma Change 4: Bring back the custom button when user terminates/closes chat window
 			window.addEventListener("onEmbeddedMessagingWindowClosed", function() {
-				var customButtonElement = document.getElementById('williamsSonomaBtn');
-				if (customButtonElement) {
-					customButtonElement.style.opacity = '1';
-					customButtonElement.style.pointerEvents = 'auto';
+				var customBtnWrapper = document.getElementById('williams-sonoma-chat-wrapper');
+				if (customBtnWrapper) {
+					customBtnWrapper.style.opacity = '1';
+					customBtnWrapper.style.pointerEvents = 'auto';
 				}
 			});
 
-			// Standard Salesforce handshakes
+			// YOUR UNIQUE IDENTIFICATION KEYS KEPT EXACTLY THE SAME:
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
-				'https://site.com',
+				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
 				{
-					scrt2URL: 'https://salesforce-scrt.com'
+					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
 				}
 			);
 
 		} catch (err) {
-			console.error('Error establishing isolated Agentforce link: ', err);
+			console.error('Error loading Embedded Messaging: ', err);
 		}
 	};
 </script>
 
-<!-- 3. Bootstrap Trigger Initialization -->
-<script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<!-- ================================================================= -->
+<!-- 3. PLATFORM BOOTSTRAP INJECTOR CORE LAYER                         -->
+<!-- ================================================================= -->
+<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
