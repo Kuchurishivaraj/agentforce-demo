@@ -15,56 +15,107 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
         }
-    </style>
-
-    <!-- THIS SPECIAL HOOK TELLS SALESFORCE TO ALLOW YOUR STYLES INSIDE THE SHADOW DOM -->
-    <style id="embeddedMessagingCustomStyles">
-        :host .embeddedMessagingIconTextButton {
-            background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?') !important;
-            background-size: 32px 32px !important;
-            background-repeat: no-repeat !important;
-            background-position: center !important;
-            background-color: #0070d2 !important;
-            border-radius: 50% !important;
-            width: 60px !important;
-            height: 60px !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-            border: none !important;
+        h1 {
+            color: #16325c;
         }
-        :host .embeddedMessagingValue {
-            display: none !important;
+        p {
+            color: #444;
+            line-height: 1.6;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: #eef4ff;
+            border-left: 4px solid #0176d3;
+            border-radius: 4px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce deployment verification==</p>
+        <p>
+            This public site is running live for Salesforce Experience Cloud deployment
+            verification. It hosts an embedded Agentforce chat widget with a custom
+            launcher icon, replacing the default Salesforce chat bubble.
+        </p>
+        <p>
+            Use this page to confirm that the chat widget loads correctly, that the
+            custom icon renders instead of the default "Ask me anything" button, and
+            that the conversation flow works end-to-end once the widget is opened.
+        </p>
+        <div class="status">
+            Status: Chat widget should appear in the bottom-right corner of this page
+            once Agentforce finishes initializing.
+        </div>
     </div>
 
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY BELOW THIS LINE -->
     <script type='text/javascript'>
-	function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; 
+        function safeInit() {
+            function runInit() {
+                try {
+                    embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+                    embeddedservice_bootstrap.init(
+                        '00Dfj00000Q0q2r',
+                        'Service_Desk_Agent_Deployment',
+                        'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+                        {
+                            scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+                        }
+                    );
+                } catch (err) {
+                    console.error('Error loading Embedded Messaging: ', err);
+                }
+            }
 
-			embeddedservice_bootstrap.init(
-				'00Dfj00000Q0q2r',
-				'Service_Desk_Agent_Deployment',
-				'https://site.com',
-				{
-					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+            // Guard against bootstrap.min.js firing before document.body exists
+            if (document.body) {
+                runInit();
+            } else {
+                document.addEventListener('DOMContentLoaded', runInit);
+            }
+        }
+
+        // Apply the custom icon AFTER Salesforce creates the button,
+        // so our styles win over Salesforce's own late-injected CSS.
+        document.addEventListener('onEmbeddedMessagingButtonCreated', function () {
+            var btn = document.querySelector(
+                '.embeddedMessagingConversationButton .embeddedMessagingIconTextButton'
+            );
+            if (btn) {
+                btn.style.setProperty(
+                    'background-image',
+                    "url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?')",
+                    'important'
+                );
+                btn.style.setProperty('background-size', 'contain', 'important');
+                btn.style.setProperty('background-repeat', 'no-repeat', 'important');
+                btn.style.setProperty('background-position', 'center', 'important');
+                btn.style.setProperty('background-color', 'transparent', 'important');
+                btn.style.setProperty('border', 'none', 'important');
+                btn.style.setProperty('width', '60px', 'important');
+                btn.style.setProperty('height', '60px', 'important');
+                btn.style.setProperty('box-shadow', 'none', 'important');
+
+                var label = btn.querySelector('.embeddedMessagingValue');
+                if (label) {
+                    label.style.setProperty('display', 'none', 'important');
+                }
+            } else {
+                console.warn('Embedded Messaging button element not found when event fired.');
+            }
+        });
+    </script>
+    <script
+        type='text/javascript'
+        src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js'
+        onload='safeInit()'
+    ></script>
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY ABOVE THIS LINE -->
-
 </body>
 </html>
