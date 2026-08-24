@@ -1,4 +1,4 @@
-<!-- 1. Custom Image Button HTML Structure (Modify Style/Image URL as Needed) -->
+<!-- 1. Custom Image Button HTML Structure -->
 <div id="custom-agentforce-wrapper" style="position: fixed; bottom: 20px; right: 20px; z-index: 999999;">
     <img 
         src="https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?" 
@@ -14,27 +14,36 @@
 <script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+			embeddedservice_bootstrap.settings.language = 'en_US'; 
 
-			// CHANGES APPLIED HERE:
-			// Automatically hide the standard Salesforce "Ask me anything" button layout on load
-			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true; 
+			// Try hiding on initial load configuration
+			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+
+			// FIXED HERE: Runtime override listener
+			// This catches Salesforce when it creates the button block and instantly forces it invisible.
+			embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
+				try {
+					if (typeof embeddedservice_bootstrap.utilAPI !== 'undefined') {
+						embeddedservice_bootstrap.utilAPI.hideChatButton();
+					}
+				} catch (e) {
+					console.error('Error hiding native button:', e);
+				}
+			};
 
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
-				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				'https://site.com',
 				{
-					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+					scrt2URL: 'https://salesforce-scrt.com'
 				}
 			);
 
-			// CHANGES APPLIED HERE:
-			// Add a click handler to your custom image that triggers the official modern v2 API
+			// Trigger configuration for your custom image
 			document.getElementById('customAgentforceBtn').addEventListener('click', function() {
 				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
-					// Use standard v2 maximize action
-					embeddedservice_bootstrap.utilAPI.launchChat(); 
+					embeddedservice_bootstrap.utilAPI.launchChat();
 				} else {
 					console.error('Agentforce framework is still loading. Please wait.');
 				}
@@ -47,4 +56,4 @@
 </script>
 
 <!-- 3. Core Salesforce Bootstrap Loader Script -->
-<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<script type='text/javascript' src='https://site.com/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
