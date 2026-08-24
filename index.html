@@ -1,10 +1,9 @@
 <!-- 1. WILLIAMS SONOMA STYLE SEPARATED FRONTEND UI -->
-<div id="williams-sonoma-chat-container" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999; font-family: sans-serif;">
-    
-    <!-- Custom Pulsing SVG Floating Button -->
-    <div id="williamsSonomaBtn" style="cursor: pointer; position: relative; width: 60px; height: 60px; border-radius: 50%; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+<div id="williams-sonoma-chat-container" style="position: fixed; bottom: 25px; right: 25px; z-index: 999999;">
+    <!-- Your Exact Static Resource Icon -->
+    <div id="williamsSonomaBtn" style="cursor: pointer; width: 60px; height: 60px; border-radius: 50%; background-color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
         <img 
-            src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?" 
+            src="https://force.com?" 
             alt="Chat with Agent" 
             style="width: 50px; height: 50px; display: block; object-fit: contain;"
         />
@@ -17,27 +16,42 @@
 		try {
 			embeddedservice_bootstrap.settings.language = 'en_US'; 
 			
-			// ARCHITECTURAL RULE 1: Direct native engine to remain completely invisible 
+			// Force Salesforce to keep its own button invisible
 			embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-			// ARCHITECTURAL RULE 2: Aggressive asynchronous UI suppression loop
-			// If Salesforce tries to inject standard layout nodes, destroy them instantly
-			var totalUISeparationLoop = setInterval(function() {
-				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
-					embeddedservice_bootstrap.utilAPI.hideChatButton();
+			// FIXED HERE: This is the event Williams Sonoma uses. 
+			// We only activate the custom click tracker AFTER Salesforce is fully ready.
+			window.addEventListener("onEmbeddedMessagingReady", function() {
+				console.log("Salesforce Core Engine Ready. Binding Custom Williams Sonoma Trigger...");
+				
+				var customButtonElement = document.getElementById('williamsSonomaBtn');
+				if (customButtonElement) {
+					customButtonElement.addEventListener('click', function() {
+						// Execute the official launch promise to maximize the widget layout
+						embeddedservice_bootstrap.utilAPI.launchChat()
+							.then(function() {
+								console.log("Chat window opened successfully.");
+								// Hide custom floating entry point when window expands
+								customButtonElement.style.opacity = '0';
+								customButtonElement.style.pointerEvents = 'none';
+							})
+							.catch(function(error) {
+								console.error('Failed to trigger Agentforce engine:', error);
+							});
+					});
 				}
-				var nativeTargets = document.querySelectorAll('.embeddedServiceHelpButton, [class*="embeddedservice-chat-header"], [class*="helpButton"], .embeddedservice-chat-launcher');
-				nativeTargets.forEach(function(node) {
-					node.remove(); // Forcefully strip element out of DOM structure completely
-				});
-			}, 50);
+			});
 
-			// Safely terminate loop after page stabilizes to maintain low browser overhead
-			setTimeout(function() {
-				clearInterval(totalUISeparationLoop);
-			}, 10000);
+			// Restore your custom image button if the user closes the chat panel
+			window.addEventListener("onEmbeddedMessagingWindowClosed", function() {
+				var customButtonElement = document.getElementById('williamsSonomaBtn');
+				if (customButtonElement) {
+					customButtonElement.style.opacity = '1';
+					customButtonElement.style.pointerEvents = 'auto';
+				}
+			});
 
-			// Core Salesforce API Handshake Sequence
+			// Standard Salesforce handshakes
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
@@ -46,30 +60,6 @@
 					scrt2URL: 'https://salesforce-scrt.com'
 				}
 			);
-
-			// ARCHITECTURAL RULE 3: Custom Programmatic Event Listeners
-			var customButtonElement = document.getElementById('williamsSonomaBtn');
-
-			customButtonElement.addEventListener('click', function() {
-				if (typeof embeddedservice_bootstrap !== 'undefined' && embeddedservice_bootstrap.utilAPI) {
-					// Fires execution promise to launch window natively 
-					embeddedservice_bootstrap.utilAPI.launchChat()
-						.then(function() {
-							// Hides custom floating entry point when windows expands
-							customButtonElement.style.opacity = '0';
-							customButtonElement.style.pointerEvents = 'none';
-						})
-						.catch(function(error) {
-							console.error('Failed to trigger Agentforce engine:', error);
-						});
-				}
-			});
-
-			// Restore your custom entrance point if the user manually closes the chat window
-			window.addEventListener("onEmbeddedMessagingWindowClosed", function() {
-				customButtonElement.style.opacity = '1';
-				customButtonElement.style.pointerEvents = 'auto';
-			});
 
 		} catch (err) {
 			console.error('Error establishing isolated Agentforce link: ', err);
