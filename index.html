@@ -16,13 +16,32 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        /* --- CUSTOM IMAGE ICON STYLES START HERE --- */
+        .embeddedMessagingConversationButton .embeddedMessagingIconTextButton {
+            background-image: url('https://orgfarm-eed0b3298e-dev-ed--fsl.develop.vf.force.com/resource/1781503585000/FSL__wo_icon_png?') !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-color: transparent !important; /* Removes default Salesforce color */
+            border: none !important;
+            width: 60px !important;  /* Adjust size as needed */
+            height: 60px !important; /* Adjust size as needed */
+            box-shadow: none !important;
+        }
+
+        /* Hides the default standard "Ask me anything" text label */
+        .embeddedMessagingConversationButton .embeddedMessagingIconTextButton .embeddedMessagingValue {
+            display: none !important;
+        }
+        /* --- CUSTOM IMAGE ICON STYLES END HERE --- */
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Welcome to My Agentforce Testing Portal</h1>
-        <p>This public site is running live for Salesforce deployment verification...</p>
+        <p>This public site is running live for Salesforce deployment verification..??</p>
     </div>
 
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY BELOW THIS LINE -->
@@ -45,9 +64,6 @@
 	};
 </script>
 <script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
-
-
-    
     <!-- PASTE YOUR SALESFORCE AGENTFORCE SNIPPET DIRECTLY ABOVE THIS LINE -->
 
 </body>
