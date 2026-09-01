@@ -1,32 +1,81 @@
 <!-- ================================================================ -->
 
-<!-- CUSTOM CHAT BUTTON                                               -->
+<!-- CUSTOM WILLIAMS SONOMA BUTTON                                   -->
 
 <!-- ================================================================ -->
 
-<button id="launchChatButton" type="button">
-    Ask Me Anything..
+<div id="williams-sonoma-chat-wrapper"
+     style="
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        z-index: 999999;
+     ">
+
+```
+<button
+    id="williamsSonomaBtn"
+    type="button"
+    aria-label="Chat with AI Agent"
+    style="
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        background-color: #FFFFFF;
+        border: 2px solid #5C1D24;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        outline: none;
+    ">
+
+    <img
+        src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?"
+        alt="Agentforce Icon"
+        style="
+            width: 42px;
+            height: 42px;
+            display: block;
+            object-fit: contain;
+            pointer-events: none;
+        "
+    />
+
 </button>
+```
+
+</div>
 
 <!-- ================================================================ -->
 
-<!-- EMBEDDED MESSAGING INITIALIZATION                               -->
+<!-- INITIALIZE EMBEDDED MESSAGING                                   -->
 
 <!-- ================================================================ -->
 
-<script type='text/javascript'>
+<script type="text/javascript">
 
     function initEmbeddedMessaging() {
+
         try {
 
             embeddedservice_bootstrap.settings.language = 'en_US';
+
+            /*
+             * Tell Salesforce not to show the default launcher
+             * when Embedded Messaging loads.
+             */
+            embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
             embeddedservice_bootstrap.init(
                 '00Dfj00000Q0q2r',
                 'Service_Desk_Agent_Deployment',
                 'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
                 {
-                    scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+                    scrt2URL:
+                        'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
                 }
             );
 
@@ -38,63 +87,97 @@
             );
 
         }
+
     }
 
 </script>
 
 <!-- ================================================================ -->
 
-<!-- LOAD SALESFORCE EMBEDDED MESSAGING BOOTSTRAP                    -->
+<!-- LOAD SALESFORCE BOOTSTRAP                                       -->
 
 <!-- ================================================================ -->
 
 <script
-    type='text/javascript'
-    src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js'
-    onload='initEmbeddedMessaging()'>
+    type="text/javascript"
+    src="https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js"
+    onload="initEmbeddedMessaging()">
 </script>
 
 <!-- ================================================================ -->
 
-<!-- LAUNCH CHAT API                                                  -->
+<!-- LAUNCH CHAT API                                                 -->
 
 <!-- ================================================================ -->
 
-<script type='text/javascript'>
+<script type="text/javascript">
+
+    var customButtonInitialized = false;
+
 
     /*
-     * Wait until Embedded Messaging has created its button/runtime.
-     * Salesforce recommends this event before calling launchChat().
+     * Salesforce fires this after the Embedded Messaging
+     * launcher has been created.
      */
     window.addEventListener(
         'onEmbeddedMessagingButtonCreated',
         function () {
 
             console.log(
-                'Embedded Messaging button created. Launch Chat API is ready.'
+                'Embedded Messaging button created.'
             );
 
-            var launchChatButton =
-                document.getElementById('launchChatButton');
 
-            if (!launchChatButton) {
+            /*
+             * Explicitly hide Salesforce's native launcher.
+             */
+            if (
+                typeof embeddedservice_bootstrap !== 'undefined' &&
+                embeddedservice_bootstrap.utilAPI
+            ) {
+
+                embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+                console.log(
+                    'Salesforce native launcher hidden.'
+                );
+
+            }
+
+
+            /*
+             * Make sure our custom button is wired only once.
+             */
+            if (customButtonInitialized) {
+                return;
+            }
+
+
+            var customButton =
+                document.getElementById(
+                    'williamsSonomaBtn'
+                );
+
+
+            if (!customButton) {
                 console.error(
-                    'Custom launch button not found.'
+                    'Custom Williams Sonoma button not found.'
                 );
                 return;
             }
 
+
             /*
-             * Connect the custom button to Salesforce
-             * Embedded Messaging.
+             * Custom button → Launch Chat API
              */
-            launchChatButton.addEventListener(
+            customButton.addEventListener(
                 'click',
                 function () {
 
                     console.log(
-                        'Custom button clicked. Launching chat...'
+                        'Custom button clicked.'
                     );
+
 
                     embeddedservice_bootstrap.utilAPI
                         .launchChat({
@@ -103,43 +186,58 @@
 
                         .then(function () {
 
-                            /*
-                             * Chat launched successfully.
-                             * Hide/disable the custom button if required.
-                             */
                             console.log(
-                                'Chat launched successfully.'
+                                'Embedded Messaging launched successfully.'
                             );
 
-                            launchChatButton.style.display = 'none';
+                            /*
+                             * Hide custom button while
+                             * conversation window is open.
+                             */
+                            document.getElementById(
+                                'williams-sonoma-chat-wrapper'
+                            ).style.display = 'none';
 
                         })
 
                         .catch(function (error) {
 
-                            /*
-                             * Chat failed to launch.
-                             */
                             console.error(
                                 'Failed to launch chat:',
                                 error
-                            );
-
-                        })
-
-                        .finally(function () {
-
-                            /*
-                             * Cleanup/logging can be performed here.
-                             */
-                            console.log(
-                                'Launch Chat API completed.'
                             );
 
                         });
 
                 }
             );
+
+
+            customButtonInitialized = true;
+
+        }
+    );
+
+
+    /*
+     * Show our custom button again when
+     * Embedded Messaging window closes.
+     */
+    window.addEventListener(
+        'onEmbeddedMessagingWindowClosed',
+        function () {
+
+            var wrapper =
+                document.getElementById(
+                    'williams-sonoma-chat-wrapper'
+                );
+
+
+            if (wrapper) {
+
+                wrapper.style.display = 'block';
+
+            }
 
         }
     );
