@@ -8,7 +8,7 @@
 />
 
 <script type='text/javascript'>
-	// Safe click handler to prevent Uncaught ReferenceError
+	// Safe launcher wrapper
 	function launchCustomChat() {
 		if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
 			embeddedservice_bootstrap.utilAPI.launchChat();
@@ -19,18 +19,14 @@
 
 	function initEmbeddedMessaging() {
 		try {
-			// Ensure namespace and settings exist
-			window.embeddedservice_bootstrap = window.embeddedservice_bootstrap || {};
-			embeddedservice_bootstrap.settings = embeddedservice_bootstrap.settings || {};
-			embeddedservice_bootstrap.settings.language = 'en_US';
-
-			// Register button created event handler safely
+			// Register the button hook before init
 			embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
 				if (embeddedservice_bootstrap.utilAPI) {
 					embeddedservice_bootstrap.utilAPI.hideChatButton();
 				}
 			};
 
+			// Initialize Embedded Messaging
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
 				'Service_Desk_Agent_Deployment',
