@@ -9,30 +9,35 @@
 
 <script type='text/javascript'>
 	function initEmbeddedMessaging() {
-		try {
-			// Ensure namespace and settings exist
-			window.embeddedservice_bootstrap = window.embeddedservice_bootstrap || {};
-			embeddedservice_bootstrap.settings = embeddedservice_bootstrap.settings || {};
-			embeddedservice_bootstrap.settings.language = 'en_US';
+    try {
 
-			// Safely hide default button once the API is ready
-			window.addEventListener("onEmbeddedMessagingReady", () => {
-				embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
-					embeddedservice_bootstrap.utilAPI.hideChatButton();
-				};
-			});
+        embeddedservice_bootstrap.settings.language = 'en_US';
 
-			embeddedservice_bootstrap.init(
-				'00Dfj00000Q0q2r',
-				'Service_Desk_Agent_Deployment',
-				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
-				{
-					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+        embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
+
+            console.log('BUTTON CREATED EVENT FIRED');
+
+            embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+            console.log('HIDE CHAT BUTTON CALLED');
+
+        };
+
+        embeddedservice_bootstrap.init(
+            '00Dfj00000Q0q2r',
+            'Service_Desk_Agent_Deployment',
+            'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+            {
+                scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+            }
+        );
+
+    } catch (err) {
+
+        console.error(
+            'Error loading Embedded Messaging: ',
+            err
+        );
+
+    }
+}
