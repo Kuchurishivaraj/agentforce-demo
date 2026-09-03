@@ -1,114 +1,33 @@
-<!-- ================================================================ -->
-
-<!-- CUSTOM AGENTFORCE IMAGE BUTTON                                  -->
-
-<!-- ================================================================ -->
-
-<div id="customAgentforceButton"
-     style="
-        position: fixed;
-        right: 25px;
-        bottom: 25px;
-        width: 65px;
-        height: 65px;
-        z-index: 999999;
-        cursor: pointer;
-     ">
-
-```
-<img
-    src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?"
-    alt="Agentforce"
-    style="
-        width: 65px;
-        height: 65px;
-        display: block;
-        object-fit: contain;
-    "
+<!-- Custom Chat Trigger Button -->
+<img 
+  id="customChatBtn" 
+  src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?" 
+  alt="Launch Chat" 
+  style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; z-index: 9999; width: 60px; height: 60px;"
+  onclick="embeddedservice_bootstrap.utilAPI.launchChat()"
 />
-```
-
-</div>
-
-<!-- ================================================================ -->
-
-<!-- CUSTOM BUTTON → LAUNCH CHAT                                     -->
-
-<!-- ================================================================ -->
-
-<script type="text/javascript">
-
-    function launchCustomAgentforceChat() {
-
-        embeddedservice_bootstrap.utilAPI.launchChat();
-
-    }
-
-    document.getElementById(
-        'customAgentforceButton'
-    ).addEventListener(
-        'click',
-        launchCustomAgentforceChat
-    );
-
-</script>
-
-<!-- ================================================================ -->
-
-<!-- EMBEDDED MESSAGING INITIALIZATION                               -->
-
-<!-- ================================================================ -->
 
 <script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US';
 
-    /*
-     * Hide the default Salesforce Embedded Messaging button
-     * when Salesforce creates it.
-     */
-    embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated =
-        function() {
+			// Hide default button as soon as it is created by the framework
+			embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
+				embeddedservice_bootstrap.utilAPI.hideChatButton();
+			};
 
-            embeddedservice_bootstrap.utilAPI.hideChatButton();
-
-        };
-
-
-    function initEmbeddedMessaging() {
-
-        try {
-
-            embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
-
-            embeddedservice_bootstrap.init(
-                '00Dfj00000Q0q2r',
-                'Service_Desk_Agent_Deployment',
-                'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
-                {
-                    scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-                }
-            );
-
-        } catch (err) {
-
-            console.error(
-                'Error loading Embedded Messaging: ',
-                err
-            );
-
-        }
-
-    };
-
+			embeddedservice_bootstrap.init(
+				'00Dfj00000Q0q2r',
+				'Service_Desk_Agent_Deployment',
+				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				{
+					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
 </script>
-
-<!-- ================================================================ -->
-
-<!-- SALESFORCE EMBEDDED MESSAGING BOOTSTRAP                         -->
-
-<!-- ================================================================ -->
-
-<script
-    type='text/javascript'
-    src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js'
-    onload='initEmbeddedMessaging()'>
-</script>
+<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
