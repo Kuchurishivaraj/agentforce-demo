@@ -1,8 +1,3 @@
-<!-- ================================================================ -->
-
-<!-- CUSTOM AGENTFORCE BUTTON                                        -->
-
-<!-- ================================================================ -->
 
 <div id="customAgentforceButton"
      style="
@@ -17,7 +12,6 @@
 
 ```
 <img
-    id="agentforceIcon"
     src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?"
     alt="Agentforce"
     style="
@@ -31,19 +25,45 @@
 
 </div>
 
-<!-- ================================================================ -->
 
-<!-- SALESFORCE EMBEDDED MESSAGING                                   -->
+<script type="text/javascript">
 
-<!-- ================================================================ -->
+    function launchCustomAgentforceChat() {
+
+        embeddedservice_bootstrap.utilAPI.launchChat();
+
+    }
+
+    document.getElementById(
+        'customAgentforceButton'
+    ).addEventListener(
+        'click',
+        launchCustomAgentforceChat
+    );
+
+</script>
+
+
 
 <script type='text/javascript'>
+
+    /*
+     * Hide the default Salesforce Embedded Messaging button
+     * when Salesforce creates it.
+     */
+    embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated =
+        function() {
+
+            embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+        };
+
 
     function initEmbeddedMessaging() {
 
         try {
 
-            embeddedservice_bootstrap.settings.language = 'en_US';
+            embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
             embeddedservice_bootstrap.init(
                 '00Dfj00000Q0q2r',
@@ -63,85 +83,11 @@
 
         }
 
-    }
-
-
-    <!-- ============================================================ -->
-    <!-- HIDE DEFAULT SALESFORCE LAUNCHER                             -->
-    <!-- ============================================================ -->
-
-    embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated =
-        function() {
-
-            console.log(
-                'Embedded Messaging button created.'
-            );
-
-            embeddedservice_bootstrap.utilAPI.hideChatButton();
-
-            console.log(
-                'Default Salesforce launcher hidden.'
-            );
-
-        };
-
-
-    <!-- ============================================================ -->
-    <!-- CUSTOM IMAGE → LAUNCH CHAT                                   -->
-    <!-- ============================================================ -->
-
-    function launchCustomAgentforceChat() {
-
-        console.log(
-            'Custom Agentforce button clicked.'
-        );
-
-        embeddedservice_bootstrap.utilAPI.launchChat()
-            .then(function() {
-
-                console.log(
-                    'Embedded Messaging launched successfully.'
-                );
-
-                /*
-                 * Optional:
-                 * Hide custom image while the chat window
-                 * is open.
-                 */
-                document.getElementById(
-                    'customAgentforceButton'
-                ).style.display = 'none';
-
-            })
-            .catch(function(error) {
-
-                console.error(
-                    'Failed to launch Embedded Messaging:',
-                    error
-                );
-
-            });
-
-    }
-
-
-    /*
-     * Connect custom image to Launch Chat API.
-     */
-    document.getElementById(
-        'customAgentforceButton'
-    ).addEventListener(
-        'click',
-        launchCustomAgentforceChat
-    );
+    };
 
 </script>
 
-<!-- ================================================================ -->
 
-<!-- LOAD SALESFORCE BOOTSTRAP                                       -->
-
-<!-- ================================================================ -->
 
 <script
     type='text/javascript'
