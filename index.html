@@ -10,12 +10,17 @@
 <script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
+			// Ensure namespace and settings exist
+			window.embeddedservice_bootstrap = window.embeddedservice_bootstrap || {};
+			embeddedservice_bootstrap.settings = embeddedservice_bootstrap.settings || {};
 			embeddedservice_bootstrap.settings.language = 'en_US';
 
-			// Hide default button as soon as it is created by the framework
-			embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
-				embeddedservice_bootstrap.utilAPI.hideChatButton();
-			};
+			// Safely hide default button once the API is ready
+			window.addEventListener("onEmbeddedMessagingReady", () => {
+				embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
+					embeddedservice_bootstrap.utilAPI.hideChatButton();
+				};
+			});
 
 			embeddedservice_bootstrap.init(
 				'00Dfj00000Q0q2r',
