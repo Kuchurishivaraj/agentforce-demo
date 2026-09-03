@@ -4,40 +4,44 @@
   src="https://orgfarm-eed0b3298e-dev-ed--c.develop.vf.force.com/resource/1787601304000/AgentforceIcon?" 
   alt="Launch Chat" 
   style="cursor: pointer; position: fixed; bottom: 20px; right: 20px; z-index: 9999; width: 60px; height: 60px;"
-  onclick="embeddedservice_bootstrap.utilAPI.launchChat()"
+  onclick="launchCustomChat()"
 />
 
 <script type='text/javascript'>
+	// Safe click handler to prevent Uncaught ReferenceError
+	function launchCustomChat() {
+		if (window.embeddedservice_bootstrap && window.embeddedservice_bootstrap.utilAPI) {
+			embeddedservice_bootstrap.utilAPI.launchChat();
+		} else {
+			console.warn('Embedded Messaging is still loading. Please try again in a moment.');
+		}
+	}
+
 	function initEmbeddedMessaging() {
-    try {
+		try {
+			// Ensure namespace and settings exist
+			window.embeddedservice_bootstrap = window.embeddedservice_bootstrap || {};
+			embeddedservice_bootstrap.settings = embeddedservice_bootstrap.settings || {};
+			embeddedservice_bootstrap.settings.language = 'en_US';
 
-        embeddedservice_bootstrap.settings.language = 'en_US';
+			// Register button created event handler safely
+			embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
+				if (embeddedservice_bootstrap.utilAPI) {
+					embeddedservice_bootstrap.utilAPI.hideChatButton();
+				}
+			};
 
-        embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function() {
-
-            console.log('BUTTON CREATED EVENT FIRED');
-
-            embeddedservice_bootstrap.utilAPI.hideChatButton();
-
-            console.log('HIDE CHAT BUTTON CALLED');
-
-        };
-
-        embeddedservice_bootstrap.init(
-            '00Dfj00000Q0q2r',
-            'Service_Desk_Agent_Deployment',
-            'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
-            {
-                scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
-            }
-        );
-
-    } catch (err) {
-
-        console.error(
-            'Error loading Embedded Messaging: ',
-            err
-        );
-
-    }
-}
+			embeddedservice_bootstrap.init(
+				'00Dfj00000Q0q2r',
+				'Service_Desk_Agent_Deployment',
+				'https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611',
+				{
+					scrt2URL: 'https://orgfarm-eed0b3298e-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://orgfarm-eed0b3298e-dev-ed.develop.my.site.com/ESWServiceDeskAgentDep1781638485611/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
